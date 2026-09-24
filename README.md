@@ -7,6 +7,29 @@ terminal-style window.
 inside the app, so end users do not need Python, Rust, ffmpeg, mpv, or any
 package manager. Download one file, install, run.
 
+## Download
+
+All installers are attached to the [v0.1.0 release](https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0).
+
+| Platform | Architecture | Installer | Size |
+|---|---|---|---|
+| macOS (10.15+) | Universal — Intel + Apple Silicon | [`.dmg`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_universal.dmg) | 124 MB |
+| Windows 10/11 | x64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_x64-setup.exe) | 107 MB |
+| Windows 10/11 | arm64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64-setup.exe) | 81 MB |
+| Linux (glibc 2.28+) | x64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.AppImage) | 174 / 235 MB |
+| Linux (glibc 2.28+) | arm64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_aarch64.AppImage) | 162 / 220 MB |
+
+### ⚠️ The installers are not signed
+
+You will get a security warning on first launch. This is expected, not a sign of
+malware — the project has no code-signing certificate. See
+[Code signing](#code-signing) for the workaround and the permanent fix.
+
+The application is GPL-3.0 and the binaries are built publicly by GitHub
+Actions, so every installer has a verifiable provenance: open the
+[Actions tab](https://github.com/dnysaz/ytg-dev/actions), pick the `release` run
+for `v0.1.0`, and you will see all five build jobs.
+
 ## Requirements (build machine only)
 
 - Node.js 20+
@@ -77,17 +100,19 @@ Linux build dependencies are installed by the workflow:
 
 ### Size
 
-Bundling a media stack is not small. Expect roughly:
+The installers are large because a whole media stack is packed inside. Raw
+payload is roughly **195 MB** (yt-dlp ~37 MB, ffmpeg ~79 MB, ffprobe ~79 MB,
+app ~12 MB), which the formats compress to:
 
-| Component | Size |
+| Installer | Shipped size |
 |---|---|
-| yt-dlp | ~37 MB |
-| ffmpeg | ~79 MB |
-| ffprobe | ~79 MB |
-| App itself | ~12 MB |
+| Windows `-setup.exe` (NSIS) | 81–107 MB |
+| macOS `.dmg` | 124 MB |
+| Linux `.deb` | 162–174 MB |
+| Linux `.AppImage` | 220–235 MB |
 
-≈ **200–210 MB** per installer. Dropping `ffprobe` saves ~79 MB but breaks some
-yt-dlp post-processing options, so it is bundled by default.
+Dropping `ffprobe` would cut ~79 MB of payload but breaks some yt-dlp
+post-processing options, so it is bundled by default.
 
 ## License
 
