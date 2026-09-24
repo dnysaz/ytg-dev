@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Terminal GUI</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+  <body>
+    <div class="terminal">
+      <!-- Search Bar -->
+      <div class="search-bar block block-yellow">
+        <span class="block-title">🔍 YouTube TUI - Search all videos (Press Enter to search)</span>
+        <div class="search-row">
+          <span class="prompt">❯</span>
+          <input id="search-input" placeholder="type 'lofi hip hop' or 'inception' then Enter" autofocus />
+          <button id="search-btn">SEARCH</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main">
+        <!-- Left: YouTube Results -->
+        <div class="panel left block block-cyan" id="left-panel">
+          <span class="block-title" id="left-title">▶ YouTube (0 videos)</span>
+          <div class="list" id="yt-list">
+            <div class="placeholder">No search yet.<br><br>Example: type 'avengers' then Enter<br><br>All YouTube videos can be searched, not just movies</div>
+          </div>
+        </div>
+
+        <!-- Right: split vertical -->
+        <div class="right">
+          <!-- Top: PLAYER FIXED ON TOP -->
+          <div class="panel block block-red" id="player-panel">
+            <span class="block-title">▶ PLAYER (direct yt-dlp stream • no embed)</span>
+            <div class="player-area">
+              <div class="player-placeholder" id="player-placeholder">
+                <div style="font-size: 32px">▶</div>
+                <div>Select a video on the left to play here</div>
+                <div class="hint">Direct YouTube stream via bundled yt-dlp (no iframe embed, no Error 153)</div>
+                <div class="hint" style="margin-top:10px; color:#666">VOD → progressive 360p mp4 (instant) • Live → HLS • 1080p → merged locally by bundled ffmpeg</div>
+              </div>
+              <video id="native-player" style="display:none" controls autoplay playsinline></video>
+              <div id="player-error" style="display:none; text-align:center; color:#ff6666; padding:20px; font-size:12px"></div>
+            </div>
+            <div class="player-info" id="player-info" style="display:none">
+              <div class="player-title" id="player-title"></div>
+              <div class="player-meta" id="player-meta"></div>
+            </div>
+          </div>
+
+          <!-- Bottom: Description + Fallback (moved from player to not disturb player) -->
+          <div class="panel block block-gray" id="desc-panel">
+            <span class="block-title">📝 Description</span>
+            <div class="fallback-bar" id="fallback-bar" style="display:none">
+              <span class="warn" id="embed-warn"></span>
+              <button id="hq-btn" class="fallback-btn">▶ Play 1080p (inline)</button>
+              <button id="browser-btn" class="fallback-btn secondary">↗ Open in Browser</button>
+            </div>
+            <div class="desc-content" id="desc-content">Select a video to see description here</div>
+            <div class="download-bar" id="download-bar" style="display:none">
+              <button id="dl-mp4-btn" class="dl-btn">⬇ Download MP4 (Video+Audio)</button>
+              <button id="dl-mp3-btn" class="dl-btn mp3">♫ Download MP3 (Audio)</button>
+              <span id="dl-status" class="dl-status"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download Progress (bottom with percentage) -->
+      <div id="dl-progress-container" class="block block-gray" style="display:none; flex-shrink:0; padding:8px 10px">
+        <div style="display:flex; align-items:center; gap:10px">
+          <span id="dl-progress-label" style="font-size:11px; color:#ccc; min-width:110px">Downloading...</span>
+          <div style="flex:1; height:8px; background:#222; border-radius:4px; overflow:hidden">
+            <div id="dl-progress-bar" style="height:8px; width:0%; background:#00c853; border-radius:4px; transition:width 0.2s"></div>
+          </div>
+          <span id="dl-progress-text" style="font-size:11px; color:#ffcc00; min-width:42px; text-align:right; font-weight:bold">0%</span>
+        </div>
+        <div id="dl-progress-log" style="font-size:10px; color:#666; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis"></div>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="status-bar block block-gray">
+        <span id="status-text">YouTube TUI - Type any title then Enter to search all YouTube videos</span>
+        <span class="help">↑↓ navigate | Enter/y play | m play 1080p | /=search</span>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "youtube-terminal-gui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri",
+    "fetch-deps": "node scripts/fetch-deps.mjs",
+    "dev": "npm run fetch-deps && tauri dev",
+    "build": "npm run fetch-deps && tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}
