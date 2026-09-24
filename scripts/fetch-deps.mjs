@@ -183,13 +183,15 @@ async function fetchMacTool(tool, triple, work, force) {
 
   const urls = FFMPEG_MAC[tool];
   if (triple === "universal-apple-darwin") {
-    const x64 = join(work, `${tool}-x64`);
-    const arm = join(work, `${tool}-arm64`);
-    await download(urls["x86_64-apple-darwin"], x64);
-    await download(urls["aarch64-apple-darwin"], arm);
+    // Merge the per-architecture artifacts we already placed, so nothing is
+    // downloaded twice.
+    const x64 = artifactPath(tool, "x86_64-apple-darwin");
+    const arm = artifactPath(tool, "aarch64-apple-darwin");
+    await fetchMacTool(tool, "x86_64-apple-darwin", work, force);
+    await fetchMacTool(tool, "aarch64-apple-darwin", work, force);
     run("lipo", ["-create", "-output", dest, x64, arm]);
     chmodSync(dest, 0o755);
-    log(`  + ${tool}-${triple} (lipo x64 + arm64)`);
+    log(`  + ${tool}-${triple} (lipo of x86_64 + aarch64)`);
     return;
   }
 
@@ -208,6 +210,19 @@ async function fetchForTarget(triple, force) {
   log(`target ${triple}`);
   const work = mkdtempSync(join(tmpdir(), "fetch-deps-"));
   try {
+    if (triple === "universal-apple-darwin") {
+      // Tauri cross-compiles each macOS architecture separately for a universal
+      // build, and every one of those builds resolves `externalBin` for its own
+      // triple. So we must provide the per-architecture sidecars as well as the
+      // merged universal one.
+      for (const t of ["x86_64-apple-darwin", "aarch64-apple-darwin", "universal-apple-darwin"]) {
+        await fetchYtdlp(t, work, force);
+        await fetchMacTool("ffmpeg", t, work, force);
+        await fetchMacTool("ffprobe", t, work, force);
+      }
+      return;
+    }
+
     await fetchYtdlp(triple, work, force);
     if (MAC_TARGETS.includes(triple)) {
       await fetchMacTool("ffmpeg", triple, work, force);

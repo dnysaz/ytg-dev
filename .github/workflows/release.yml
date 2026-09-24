@@ -69,7 +69,8 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev \
             patchelf \
-            xz-utils
+            xz-utils \
+            xdg-utils
 
       - name: Install npm dependencies
         run: npm ci
@@ -110,7 +111,15 @@ jobs:
     # because a single architecture failed.
     if: ${{ !cancelled() && startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-22.04
+    env:
+      GH_REPO: ${{ github.repository }}
     steps:
+      # `gh release create --generate-notes` needs the git history to work out
+      # the previous tag, and gh needs a repo to target at all.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/download-artifact@v4
         with:
           path: dist
