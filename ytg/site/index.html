@@ -54,6 +54,63 @@
         "featureList": "search YouTube, inline playback up to 1080p, MP4 and MP3 download, ad-free"
       }
     </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Do I need Python, ffmpeg or mpv?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Every installer bundles yt-dlp, ffmpeg and ffprobe. Download one file, install, run — there is nothing else to set up."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it really ad-free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. No ads, no trackers and no sign-in wall. Videos stream straight from YouTube into the app window."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much RAM does it use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "About 140 MB on a typical laptop, against roughly 1.6 GB for a single browser tab with YouTube open."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which systems are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "macOS 10.15+ (Intel and Apple Silicon), Windows 10/11 (x64 and arm64) and Linux glibc 2.28+ (.deb and AppImage)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it play 1080p?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Press m and the bundled ffmpeg merges the best video and audio into a local MP4 that plays inside the window."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it open source?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, GPL-3.0. The source code, installers and CI build logs are all public on GitHub."
+            }
+          }
+        ]
+      }
+    </script>
+
 
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -66,6 +123,7 @@
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="#features">Features</a>
         <a href="#download">Download</a>
+        <a href="#faq">FAQ</a>
         <a href="#requirements">Requirements</a>
         <a class="release-link" href="https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0">
           GitHub release
@@ -97,7 +155,10 @@
 
       </section>
 
-      <section class="showcase" aria-label="Screenshot of the application">
+      <section class="showcase" aria-labelledby="showcase-title">
+        <div class="section-heading">
+          <h2 id="showcase-title">Search, play and download YouTube — in one window.</h2>
+        </div>
         <figure class="showcase-frame">
           <figcaption class="showcase-bar">
             <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -262,6 +323,39 @@
         </div>
       </section>
 
+      <section class="faq" id="faq">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2>Questions, answered.</h2>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-item">
+            <h3>Do I need Python, ffmpeg or mpv?</h3>
+            <p>No. Every installer bundles yt-dlp, ffmpeg and ffprobe. Download one file, install, run — there is nothing else to set up.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Is it really ad-free?</h3>
+            <p>Yes. No ads, no trackers and no sign-in wall. Videos stream straight from YouTube into the app window.</p>
+          </article>
+          <article class="faq-item">
+            <h3>How much RAM does it use?</h3>
+            <p>About 140 MB on a typical laptop, against roughly 1.6 GB for a single browser tab with YouTube open.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Which systems are supported?</h3>
+            <p>macOS 10.15+ (Intel and Apple Silicon), Windows 10/11 (x64 and arm64) and Linux glibc 2.28+ (.deb and AppImage).</p>
+          </article>
+          <article class="faq-item">
+            <h3>Does it play 1080p?</h3>
+            <p>Yes. Press <code>m</code> and the bundled ffmpeg merges the best video and audio into a local MP4 that plays inside the window.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Is it open source?</h3>
+            <p>Yes, GPL-3.0. The source code, installers and CI build logs are all public on GitHub.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="requirements" id="requirements">
         <div class="requirements-card">
           <div>
@@ -300,7 +394,7 @@
       window.addEventListener('scroll', syncHeader, { passive: true });
 
       const revealTargets = document.querySelectorAll(
-        '.feature-card, .download-card, .section-heading, .requirements-card, .release-meta, .showcase-frame'
+        '.feature-card, .download-card, .section-heading, .requirements-card, .release-meta, .showcase-frame, .faq-item'
       );
       revealTargets.forEach((el) => el.classList.add('reveal'));
 
