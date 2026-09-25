@@ -14,10 +14,10 @@ All installers are attached to the [v0.1.1 release](https://github.com/dnysaz/yt
 | Platform | Architecture | Installer | Size |
 |---|---|---|---|
 | macOS (10.15+) | Universal — Intel + Apple Silicon | [`.dmg`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_universal.dmg) | 124 MB |
-| Windows 10/11 | x64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_x64-setup.exe) | 107 MB |
+| Windows 10/11 | x64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_x64-setup.exe) | 108 MB |
 | Windows 10/11 | arm64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_arm64-setup.exe) | 81 MB |
-| Linux (glibc 2.28+) | x64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.AppImage) | 174 / 235 MB |
-| Linux (glibc 2.28+) | arm64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_arm64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_aarch64.AppImage) | 162 / 220 MB |
+| Linux (glibc 2.28+) | x64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.AppImage) | 175 / 236 MB |
+| Linux (glibc 2.28+) | arm64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_arm64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_aarch64.AppImage) | 163 / 221 MB |
 
 ### ⚠️ The installers are not signed
 
@@ -106,10 +106,10 @@ app ~12 MB), which the formats compress to:
 
 | Installer | Shipped size |
 |---|---|
-| Windows `-setup.exe` (NSIS) | 81–107 MB |
+| Windows `-setup.exe` (NSIS) | 81–108 MB |
 | macOS `.dmg` | 124 MB |
-| Linux `.deb` | 162–174 MB |
-| Linux `.AppImage` | 220–235 MB |
+| Linux `.deb` | 163–175 MB |
+| Linux `.AppImage` | 221–236 MB |
 
 Dropping `ffprobe` would cut ~79 MB of payload but breaks some yt-dlp
 post-processing options, so it is bundled by default.
