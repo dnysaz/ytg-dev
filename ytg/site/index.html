@@ -106,6 +106,22 @@
               "@type": "Answer",
               "text": "Yes, GPL-3.0. The source code, installers and CI build logs are all public on GitHub."
             }
+          },
+          {
+            "@type": "Question",
+            "name": "Windows says the installer is unrecognized. Is it safe?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The builds are not code-signed yet, so SmartScreen warns on first run. Verify the file against SHA256SUMS.txt on the release page, then choose More info \u2192 Run anyway."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I get updates?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Watch the GitHub releases page. Every version ships installers for macOS, Windows and Linux plus a checksum file."
+            }
           }
         ]
       }
@@ -352,6 +368,14 @@
           <article class="faq-item">
             <h3>Is it open source?</h3>
             <p>Yes, GPL-3.0. The source code, installers and CI build logs are all public on GitHub.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Windows says the installer is unrecognized. Is it safe?</h3>
+            <p>Yes. The builds are not code-signed yet, so SmartScreen warns on first run. Verify the file against <code>SHA256SUMS.txt</code> on the release page, then choose More info → Run anyway.</p>
+          </article>
+          <article class="faq-item">
+            <h3>How do I get updates?</h3>
+            <p>Watch the GitHub releases page. Every version ships installers for macOS, Windows and Linux plus a checksum file.</p>
           </article>
         </div>
       </section>

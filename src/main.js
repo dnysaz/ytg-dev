@@ -6,13 +6,19 @@ let videos = [];
 let selectedIdx = 0;
 let isDownloading = false;
 let isFetchingHq = false;
+let isSearching = false;
+let isFetchingStream = false;
 
 async function searchYoutube() {
+  // Enter bypasses the disabled button - without this guard every keypress
+  // spawned another yt-dlp process and the CPU contention stuttered playback.
+  if (isSearching) return;
   const query = searchInput.value.trim();
   if (!query) {
     statusText.textContent = "Please enter a query first!";
     return;
   }
+  isSearching = true;
   ytList.innerHTML = '<div class="placeholder">⏳ Searching YouTube "' + escapeHtml(query) + '" via yt-dlp ...</div>';
   leftTitle.textContent = '▶ YouTube (searching...)';
   statusText.textContent = 'Searching YouTube "' + query + '" via yt-dlp (bukan embed)...';
@@ -30,6 +36,7 @@ async function searchYoutube() {
     ytList.innerHTML = '<div class="placeholder" style="color:#ff4444">Error: ' + escapeHtml(String(e)) + '</div>';
     statusText.textContent = "Error: " + e;
   } finally {
+    isSearching = false;
     searchBtn.disabled = false;
   }
 }
@@ -96,6 +103,11 @@ async function playVideo(idx) {
     statusText.textContent = "Please select a video first";
     return;
   }
+  if (isFetchingStream) {
+    statusText.textContent = "Still resolving the previous stream, one moment...";
+    return;
+  }
+  isFetchingStream = true;
   hideAllPlayers();
   playerPlaceholder.style.display = "none";
   playerInfo.style.display = "block";
@@ -147,6 +159,8 @@ async function playVideo(idx) {
     embedWarn.style.color = "#ff6666";
     showError("Cannot get direct stream: " + String(e).slice(0,100) + " - try the 1080p button");
     return;
+  } finally {
+    isFetchingStream = false;
   }
 }
 
@@ -342,7 +356,29 @@ window.addEventListener("DOMContentLoaded", () => {
     window.__TAURI__.event.listen("download-log", (event) => {
       // optional log debugging
     });
+    window.__TAURI__.event.listen("hq-progress", (event) => {
+      const p = event.payload || {};
+      const pct = Math.round(p.percent ?? 0);
+      playerError.style.display = "flex";
+      playerError.innerHTML =
+        '<div style="color:#ffcc00">Merging 1080p locally... ' + pct + '%</div>' +
+        '<div style="color:#888; font-size:11px; margin-top:4px">' + escapeHtml(String(p.log || "")) + "</div>";
+      statusText.textContent = "1080p: " + pct + "% - " + String(p.log || "").slice(0, 70);
+    });
   }
+
+  // Feedback while the buffer refills: users read silence as a crash when the
+  // UI says nothing.
+  nativePlayer.preload = "auto";
+  nativePlayer.addEventListener("waiting", () => {
+    statusText.textContent = "Buffering... " + (playerTitle.textContent || "");
+  });
+  nativePlayer.addEventListener("stalled", () => {
+    statusText.textContent = "Stream stalled - retrying (try Play 1080p if it persists)";
+  });
+  nativePlayer.addEventListener("playing", () => {
+    statusText.textContent = "Now Playing (inside window): " + (playerTitle.textContent || "");
+  });
 
   nativePlayer.addEventListener("error", () => {
     console.log("nativePlayer error event");

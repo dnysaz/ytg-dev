@@ -88,12 +88,32 @@ fn build_tool_command(program: &Path) -> Command {
         cmd.env("PATH", joined);
     }
 
+    // `yt-dlp`, `ffmpeg` and `ffprobe` are console binaries. On Windows every
+    // spawn would otherwise flash a terminal window over the app (and confuse
+    // users into thinking a second app had opened).
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        cmd.creationflags(CREATE_NO_WINDOW);
+    }
+
     cmd
 }
 
 fn ytdlp_command() -> Result<Command, String> {
     let ytdlp = require_sidecar("yt-dlp")?;
-    Ok(build_tool_command(&ytdlp))
+    let mut cmd = build_tool_command(&ytdlp);
+
+    // Point yt-dlp at the bundled ffmpeg explicitly instead of relying on the
+    // PATH tweak above: merges fail silently on Windows when ffprobe/ffmpeg
+    // cannot be resolved.
+    if let Some(dir) = which_sidecar("ffmpeg").and_then(|p| p.parent().map(Path::to_path_buf)) {
+        cmd.arg("--ffmpeg-location");
+        cmd.arg(dir);
+    }
+
+    Ok(cmd)
 }
 
 // ---------------------------------------------------------------------------
@@ -133,7 +153,11 @@ fn format_duration(secs: f64) -> String {
 // Commands
 // ---------------------------------------------------------------------------
 
-#[tauri::command]
+// NOTE: every command that runs a subprocess is marked `async`. Tauri executes
+// synchronous commands on the main thread, and a yt-dlp call can take seconds -
+// that froze the event loop and Windows reported the window as "Not responding".
+
+#[tauri::command(async)]
 fn search_youtube(query: String) -> Result<Vec<YoutubeVideo>, String> {
     if query.trim().is_empty() {
         return Err("Query is empty".into());
@@ -144,6 +168,8 @@ fn search_youtube(query: String) -> Result<Vec<YoutubeVideo>, String> {
         "--flat-playlist",
         "--dump-json",
         "--no-warnings",
+        "--socket-timeout",
+        "10",
         &format!("ytsearch10:{query}"),
     ]);
 
@@ -213,39 +239,49 @@ fn search_youtube(query: String) -> Result<Vec<YoutubeVideo>, String> {
 /// Best-effort *low latency* stream for inline playback: a muxed progressive
 /// MP4 (360p) or an HLS manifest for live streams. High quality is served by
 /// `fetch_hq_stream` instead, which lets ffmpeg merge a local file.
-#[tauri::command]
+#[tauri::command(async)]
 fn get_stream_url(video_id: String) -> Result<String, String> {
     let url = format!("https://www.youtube.com/watch?v={video_id}");
 
-    // Progressive muxed formats play directly in the webview without merging.
+    // Progressive muxed formats (360p video + audio) play directly in the
+    // webview without merging. One probe per player client: `18/22` means
+    // "format 18, else 22". The old matrix of 4 formats x 3 clients could run
+    // 12 yt-dlp processes back to back, which made playback take 30s to start.
     for client in ["android", "ios", "web"] {
-        for fmt in ["18", "22", "18/best", "22/best"] {
-            let mut cmd = ytdlp_command()?;
-            cmd.args([
-                "-g",
-                "-f",
-                fmt,
-                "--extractor-args",
-                &format!("youtube:player_client={client}"),
-                "--no-warnings",
-                "--no-playlist",
-                &url,
-            ]);
-            let Ok(output) = cmd.output() else { continue };
-            if !output.status.success() {
-                continue;
-            }
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let first = stdout.lines().next().unwrap_or("").trim().to_string();
-            if first.starts_with("http") {
-                return Ok(first);
-            }
+        let mut cmd = ytdlp_command()?;
+        cmd.args([
+            "-g",
+            "-f",
+            "18/22",
+            "--socket-timeout",
+            "8",
+            "--no-warnings",
+            "--no-playlist",
+            "--extractor-args",
+            &format!("youtube:player_client={client}"),
+            &url,
+        ]);
+        let Ok(output) = cmd.output() else { continue };
+        if !output.status.success() {
+            continue;
+        }
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let first = stdout.lines().next().unwrap_or("").trim().to_string();
+        if first.starts_with("http") {
+            return Ok(first);
         }
     }
 
     // Live streams surface as an HLS manifest, which the webview plays natively.
     let mut cmd = ytdlp_command()?;
-    cmd.args(["-g", "--no-warnings", "--no-playlist", &url]);
+    cmd.args([
+        "-g",
+        "--socket-timeout",
+        "8",
+        "--no-warnings",
+        "--no-playlist",
+        &url,
+    ]);
     let output = cmd.output().map_err(|e| e.to_string())?;
     if !output.status.success() {
         let err = String::from_utf8_lossy(&output.stderr).trim().to_string();
@@ -277,8 +313,20 @@ fn get_stream_url(video_id: String) -> Result<String, String> {
 ///
 /// This replaces the old external-player fallback: it stays in-window and needs
 /// no third-party media player on the user's machine.
+///
+/// The heavy lifting runs on a blocking-pool thread (never on the async
+/// runtime or the main thread), emits `hq-progress` events so the UI can show
+/// the download/merge percentage, and stages the file under a temp name: an
+/// interrupted run can never leave a half-merged MP4 that fails to play next
+/// time.
 #[tauri::command]
 async fn fetch_hq_stream(app: tauri::AppHandle, video_id: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || fetch_hq_stream_blocking(&app, video_id))
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+fn fetch_hq_stream_blocking(app: &tauri::AppHandle, video_id: String) -> Result<String, String> {
     let dir = app
         .path()
         .app_cache_dir()
@@ -288,40 +336,108 @@ async fn fetch_hq_stream(app: tauri::AppHandle, video_id: String) -> Result<Stri
 
     let target = dir.join(format!("{video_id}.mp4"));
     if target.is_file() {
-        return Ok(target.to_string_lossy().into_owned());
+        match target.metadata() {
+            Ok(meta) if meta.len() > 64 * 1024 => {
+                return Ok(target.to_string_lossy().into_owned());
+            }
+            // Empty or truncated leftover from an interrupted merge.
+            _ => {
+                let _ = std::fs::remove_file(&target);
+            }
+        }
     }
+
+    let staging = dir.join(format!("{video_id}.staging.mp4"));
+    let _ = std::fs::remove_file(&staging);
+    let _ = std::fs::remove_file(dir.join(format!("{video_id}.staging.mp4.part")));
 
     let url = format!("https://www.youtube.com/watch?v={video_id}");
     let mut cmd = ytdlp_command()?;
     cmd.args([
         "--no-warnings",
         "--no-playlist",
+        "--newline",
+        "--progress",
+        "--socket-timeout",
+        "15",
         "-f",
         "bv*[height<=1080]+ba/b[height<=1080]/b",
         "--merge-output-format",
         "mp4",
         "-o",
-        &target.to_string_lossy(),
+        &staging.to_string_lossy(),
         &url,
     ]);
+    // Progress, warnings and errors all arrive on stderr - reading a single
+    // pipe keeps us free of the two-pipe deadlock, and stdout has nothing we
+    // need for this invocation.
+    cmd.stdout(Stdio::null());
+    cmd.stderr(Stdio::piped());
 
-    let output = cmd.output().map_err(|e| e.to_string())?;
-    if !output.status.success() {
-        let err = String::from_utf8_lossy(&output.stderr).trim().to_string();
-        return Err(if err.is_empty() {
-            "yt-dlp could not fetch this video".into()
+    let emit = |percent: f64, log: &str| {
+        let _ = app.emit(
+            "hq-progress",
+            serde_json::json!({ "percent": percent, "log": log }),
+        );
+    };
+    emit(0.0, "Starting 1080p download (bundled yt-dlp)...");
+
+    let mut child = cmd.spawn().map_err(|e| e.to_string())?;
+    let stderr = child.stderr.take().ok_or("no stderr")?;
+    let reader = BufReader::new(stderr);
+
+    let mut recent: Vec<String> = Vec::new();
+    let mut last_percent = 0.0_f64;
+    for line in reader.lines().map_while(Result::ok) {
+        let trimmed = line.trim().to_string();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if trimmed.contains("[download]") && trimmed.contains('%') {
+            if let Some(pct) = parse_progress(&trimmed) {
+                last_percent = pct;
+                emit(pct, &trimmed);
+                continue;
+            }
+        }
+        if trimmed.contains("Merging formats") {
+            last_percent = 95.0;
+            emit(95.0, &trimmed);
+        } else if trimmed.contains("Destination:")
+            || trimmed.contains("[ffmpeg]")
+            || trimmed.contains("[Merger]")
+        {
+            if last_percent < 90.0 {
+                last_percent = 90.0;
+                emit(90.0, &trimmed);
+            }
+        }
+        if recent.len() >= 20 {
+            recent.remove(0);
+        }
+        recent.push(trimmed);
+    }
+
+    let status = child.wait().map_err(|e| e.to_string())?;
+    if !status.success() || !staging.is_file() {
+        let _ = std::fs::remove_file(&staging);
+        let tail = recent.join("\n");
+        return Err(if tail.is_empty() {
+            "yt-dlp could not fetch this video (see the app log)".into()
         } else {
-            err
+            format!("1080p download failed:\n{tail}")
         });
     }
-    if !target.is_file() {
-        return Err("yt-dlp finished without producing a file".into());
-    }
 
+    if target.exists() {
+        let _ = std::fs::remove_file(&target);
+    }
+    std::fs::rename(&staging, &target).map_err(|e| e.to_string())?;
+
+    emit(100.0, "Merge complete");
     Ok(target.to_string_lossy().into_owned())
 }
 
-#[tauri::command]
 fn download_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
     let dir = app.path().download_dir().map_err(|e| e.to_string())?;
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;

@@ -136,8 +136,15 @@ The installers are **not signed**. Users will see:
   Mitigate with an Apple Developer ID and notarization (`bundle.macOS.signingIdentity`).
 - **Windows** — SmartScreen warns ("Windows protected your PC"). Mitigate with an
   EV/OV code-signing certificate.
+- **Linux** — AppImage files need `chmod +x` and some distros flag them as
+  unsigned.
 
-Ad-hoc workaround for testers: `xattr -dr com.apple.quarantine /Applications/youtube-terminal-gui.app`.
+Ad-hoc workaround for testers:
+
+- **macOS**: `xattr -dr com.apple.quarantine /Applications/youtube-terminal-gui.app`
+- **Windows**: open the installer → "Windows protected your PC" → **More info** →
+  **Run anyway**. Verify the download first against `SHA256SUMS.txt` on the
+  release page (`certutil -hashfile <file> SHA256`).
 
 ## Keyboard shortcuts
 
