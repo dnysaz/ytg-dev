@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="YouTube Terminal GUI is a self-contained, ad-free desktop app for searching, playing, and downloading YouTube videos."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="YouTube Terminal GUI — Search, play, and download" />
+    <meta
+      property="og:description"
+      content="A self-contained, ad-free desktop app for searching, playing and downloading YouTube videos. yt-dlp and ffmpeg are bundled."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffcc00'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='15' font-weight='bold' text-anchor='middle' fill='%2305070b'%3E%3E_%3C/text%3E%3C/svg%3E"
+    />
+    <title>YouTube Terminal GUI — Search, play, and download</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="YouTube Terminal GUI home">
+        <span class="brand-mark" aria-hidden="true">&gt;_</span>
+        <span>YouTube Terminal GUI</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a href="#requirements">Requirements</a>
+        <a class="release-link" href="https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0">
+          GitHub release
+        </a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> v0.1.0 is available</p>
+          <h1>YouTube, without the browser.</h1>
+          <p class="hero-lead">
+            Search, play, and download YouTube videos from a fast terminal-style
+            desktop app. yt-dlp, ffmpeg, and ffprobe are bundled, so there is
+            nothing extra to install — and no ads, ever.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#download">Download the app</a>
+            <a class="button button-secondary" href="#features">See how it works</a>
+          </div>
+          <ul class="hero-points" aria-label="Highlights">
+            <li>100% ad-free</li>
+            <li>No accounts, no trackers</li>
+            <li>Self-contained installers</li>
+            <li>Linux, macOS, and Windows</li>
+          </ul>
+        </div>
+
+      </section>
+
+      <section class="showcase" aria-label="Screenshot of the application">
+        <figure class="showcase-frame">
+          <figcaption class="showcase-bar">
+            <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="showcase-title">youtube-terminal-gui — searching “lofi hip hop”</span>
+          </figcaption>
+          <img
+            src="assets/app-screenshot.jpg"
+            alt="YouTube Terminal GUI window showing ten search results for lofi hip hop on the left and a video playing inline on the right"
+            width="1600"
+            height="1000"
+            loading="lazy"
+          />
+        </figure>
+        <p class="showcase-note">
+          Measured on this machine: the app runs at about
+          <strong>140&nbsp;MB</strong> of RAM, while a single browser tab with
+          YouTube open sits at about <strong>1.6&nbsp;GB</strong> — and it stays
+          ad-free.
+        </p>
+      </section>
+
+      <section class="features" id="features">
+        <div class="section-heading">
+          <p class="eyebrow">Built for focus</p>
+          <h2>Everything you need. Nothing you do not.</h2>
+          <p>
+            A compact interface for discovering videos, watching them in the
+            same window, and saving a copy when you need it. No ad breaks, no
+            pop-ups, no sign-in wall — the video starts when you press Enter.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-search" aria-hidden="true"></span>
+            <h3>Search instantly</h3>
+            <p>Find videos across YouTube with a lightweight, keyboard-friendly search flow.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-play" aria-hidden="true"></span>
+            <h3>Play inline</h3>
+            <p>Stream progressive MP4 or live HLS directly in the app, with no iframe embeds.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-quality" aria-hidden="true"></span>
+            <h3>Go up to 1080p</h3>
+            <p>Bundled ffmpeg merges the best video and audio locally for high-quality playback.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon feature-icon-download" aria-hidden="true"></span>
+            <h3>Save a copy</h3>
+            <p>Download MP4 video or MP3 audio with clear progress and status feedback.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="download-section" id="download">
+        <div class="section-heading download-heading">
+          <p class="eyebrow">Get the installer</p>
+          <h2>Choose your platform.</h2>
+          <p>
+            Every installer is self-contained and published in the
+            <a href="https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0">v0.1.0 GitHub Release</a>.
+          </p>
+        </div>
+
+        <div class="download-grid">
+          <article class="download-card">
+            <div class="download-card-header">
+              <div class="platform-mark platform-mac" aria-hidden="true">mac</div>
+              <div>
+                <h3>macOS</h3>
+                <p>Universal · Intel + Apple Silicon</p>
+              </div>
+              <span class="version-tag">v0.1.0</span>
+            </div>
+            <a
+              class="download-button download-button-primary"
+              href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_universal.dmg"
+              aria-label="Download YouTube Terminal GUI for macOS"
+            >
+              Download .dmg <span>124 MB</span>
+            </a>
+            <p class="platform-note">macOS 10.15 or later</p>
+          </article>
+
+          <article class="download-card">
+            <div class="download-card-header">
+              <div class="platform-mark platform-windows" aria-hidden="true">win</div>
+              <div>
+                <h3>Windows</h3>
+                <p>Windows 10 / 11</p>
+              </div>
+              <span class="version-tag">v0.1.0</span>
+            </div>
+            <div class="download-button-row">
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_x64-setup.exe"
+                aria-label="Download YouTube Terminal GUI for Windows x64"
+              >
+                x64 installer <span>107 MB</span>
+              </a>
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64-setup.exe"
+                aria-label="Download YouTube Terminal GUI for Windows arm64"
+              >
+                arm64 installer <span>81 MB</span>
+              </a>
+            </div>
+            <p class="platform-note">NSIS setup packages</p>
+          </article>
+
+          <article class="download-card download-card-linux">
+            <div class="download-card-header">
+              <div class="platform-mark platform-linux" aria-hidden="true">lnx</div>
+              <div>
+                <h3>Linux</h3>
+                <p>glibc 2.28 or later</p>
+              </div>
+              <span class="version-tag">v0.1.0</span>
+            </div>
+            <div class="download-button-row">
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.deb"
+                aria-label="Download YouTube Terminal GUI Debian package for x64 Linux"
+              >
+                x64 .deb <span>174 MB</span>
+              </a>
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.AppImage"
+                aria-label="Download YouTube Terminal GUI AppImage for x64 Linux"
+              >
+                x64 AppImage <span>235 MB</span>
+              </a>
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64.deb"
+                aria-label="Download YouTube Terminal GUI Debian package for arm64 Linux"
+              >
+                arm64 .deb <span>162 MB</span>
+              </a>
+              <a
+                class="download-button"
+                href="https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_aarch64.AppImage"
+                aria-label="Download YouTube Terminal GUI AppImage for arm64 Linux"
+              >
+                arm64 AppImage <span>220 MB</span>
+              </a>
+            </div>
+            <p class="platform-note">Choose .deb for package-manager installs or AppImage for a portable launch.</p>
+          </article>
+        </div>
+
+        <div class="release-meta" aria-label="Release information">
+          <span>Published 24 September 2026</span>
+          <span>GPL-3.0</span>
+          <span>7 installers</span>
+          <a href="https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0">View release page</a>
+        </div>
+      </section>
+
+      <section class="requirements" id="requirements">
+        <div class="requirements-card">
+          <div>
+            <p class="eyebrow">For developers</p>
+            <h2>Build it yourself.</h2>
+            <p>
+              Node.js 20+ and a stable Rust toolchain are the only build-machine
+              requirements. End users only need the installer.
+            </p>
+          </div>
+          <a class="button button-secondary" href="https://github.com/dnysaz/ytg-dev">View source on GitHub</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>YouTube Terminal GUI</span>
+      <span>Search. Play. Download.</span>
+      <a href="https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0">Release v0.1.0</a>
+    </footer>
+
+    <script>
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const target = document.querySelector(link.getAttribute('href'));
+          if (!target) return;
+          event.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, '', link.getAttribute('href'));
+        });
+      });
+
+      const header = document.querySelector('.site-header');
+      const syncHeader = () => header.classList.toggle('is-stuck', window.scrollY > 24);
+      syncHeader();
+      window.addEventListener('scroll', syncHeader, { passive: true });
+
+      const revealTargets = document.querySelectorAll(
+        '.feature-card, .download-card, .section-heading, .requirements-card, .release-meta, .showcase-frame'
+      );
+      revealTargets.forEach((el) => el.classList.add('reveal'));
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            });
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+        );
+        revealTargets.forEach((el) => observer.observe(el));
+      } else {
+        revealTargets.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>
