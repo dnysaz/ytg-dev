@@ -9,15 +9,15 @@ package manager. Download one file, install, run.
 
 ## Download
 
-All installers are attached to the [v0.1.0 release](https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.0).
+All installers are attached to the [v0.1.1 release](https://github.com/dnysaz/ytg-dev/releases/tag/v0.1.1).
 
 | Platform | Architecture | Installer | Size |
 |---|---|---|---|
-| macOS (10.15+) | Universal — Intel + Apple Silicon | [`.dmg`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_universal.dmg) | 124 MB |
-| Windows 10/11 | x64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_x64-setup.exe) | 107 MB |
-| Windows 10/11 | arm64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64-setup.exe) | 81 MB |
-| Linux (glibc 2.28+) | x64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_amd64.AppImage) | 174 / 235 MB |
-| Linux (glibc 2.28+) | arm64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_arm64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.0/youtube-terminal-gui_0.1.0_aarch64.AppImage) | 162 / 220 MB |
+| macOS (10.15+) | Universal — Intel + Apple Silicon | [`.dmg`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_universal.dmg) | 124 MB |
+| Windows 10/11 | x64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_x64-setup.exe) | 107 MB |
+| Windows 10/11 | arm64 | [`-setup.exe`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_arm64-setup.exe) | 81 MB |
+| Linux (glibc 2.28+) | x64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_amd64.AppImage) | 174 / 235 MB |
+| Linux (glibc 2.28+) | arm64 | [`.deb`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_arm64.deb) · [`.AppImage`](https://github.com/dnysaz/ytg-dev/releases/download/v0.1.1/youtube-terminal-gui_0.1.1_aarch64.AppImage) | 162 / 220 MB |
 
 ### ⚠️ The installers are not signed
 
@@ -28,7 +28,7 @@ malware — the project has no code-signing certificate. See
 The application is GPL-3.0 and the binaries are built publicly by GitHub
 Actions, so every installer has a verifiable provenance: open the
 [Actions tab](https://github.com/dnysaz/ytg-dev/actions), pick the `release` run
-for `v0.1.0`, and you will see all five build jobs.
+for `v0.1.1`, and you will see all five build jobs.
 
 ## Requirements (build machine only)
 
